@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MetroSync Passenger View</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#f7faf9;color:#18302a;margin:0}
+header{background:#fff;border-bottom:1px solid #dce8e3;padding:18px 7%;display:flex;justify-content:space-between;align-items:center}
+h1{margin:0;color:#17823b}.live{color:#17823b;font-weight:700}.wrap{max-width:900px;margin:35px auto;padding:0 20px}
+select{width:100%;padding:13px;border:1px solid #cbdad4;border-radius:9px;background:#fff;margin-bottom:18px}
+.meta{display:flex;justify-content:space-between;color:#64756e;margin-bottom:14px}.cards{display:grid;gap:12px}
+.card{background:#fff;border:1px solid #dce8e3;border-radius:12px;padding:18px;box-shadow:0 2px 8px #00000008}
+.card p{margin:0 0 10px;color:#53665f}.time{font-size:12px;color:#8a9994}.empty{text-align:center;padding:40px;color:#71817b}
+</style>
+</head>
+<body>
+<header><h1>MetroSync</h1><span class="live">● LIVE</span></header>
+<div class="wrap">
+<select id="station"><option value="">Select a station...</option></select>
+<div class="meta"><span id="line"></span><span>Live viewers: <b id="viewers">0</b></span></div>
+<div id="announcements" class="cards"><div class="empty">Select a station to see live announcements.</div></div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket=io();
+const station=document.getElementById('station');
+const list=document.getElementById('announcements');
+let current='',items=[];
+
+async function loadStations(){
+  const response=await fetch('/api/v1/stations');
+  const body=await response.json();
+  (body.data||[]).forEach(s=>{
+    const option=document.createElement('option');
+    option.value=s._id;
+    option.textContent=`${s.name} — ${s.line}`;
+    option.dataset.line=s.line;
+    station.appendChild(option);
+  });
+}
+
+station.onchange=async()=>{
+  current=station.value;
+  document.getElementById('viewers').textContent='0';
+  if(!current){items=[];render();return;}
+  const option=station.options[station.selectedIndex];
+  document.getElementById('line').textContent=option.dataset.line;
+  socket.emit('joinStation',current);
+  const response=await fetch(`/api/v1/stations/${current}/announcements?limit=50`);
+  const body=await response.json();
+  items=body.data||[];
+  render();
+};
+
+socket.on('announcement',announcement=>{
+  if(String(announcement.stationId)===String(current)){
+    items.unshift(announcement);
+    render();
+  }
+});
+
+socket.on('presenceUpdate',payload=>{
+  if(String(payload.stationId)===String(current)){
+    document.getElementById('viewers').textContent=payload.count;
+  }
+});
+
+function render(){
+  if(!items.length){list.innerHTML='<div class="empty">No announcements for this station.</div>';return;}
+  list.innerHTML=items.map(a=>`<article class="card"><p>${escapeHtml(a.text)}</p><div class="time">${new Date(a.createdAt).toLocaleString()}</div></article>`).join('');
+}
+function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));}
+loadStations();
+</script>
+</body>
+</html>

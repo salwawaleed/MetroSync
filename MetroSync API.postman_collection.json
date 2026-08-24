@@ -1,0 +1,182 @@
+{
+  "info": {
+    "_postman_id": "30f026a5-73d2-4038-87d2-cb2def9f31ba",
+    "name": "MetroSync API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56555397",
+    "_collection_link": "https://go.postman.co/collection/56555397-30f026a5-73d2-4038-87d2-cb2def9f31ba?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Admin Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"admin@metro.local\",\r\n  \"password\": \"AdminPassword123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all stations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/stations",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "stations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get station announcements",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/stations/6a8b93c59977021716d9c727/announcements",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "stations",
+            "6a8b93c59977021716d9c727",
+            "announcements"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "create announcement",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhOGI5M2M3Y2RhZmQyMjhlYTVjNGQ4MyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NzUzMzE3NCwiZXhwIjoxNzg3NTQwMzc0fQ.vRbM-FrXzA-dS-8tmP_i-0u6hKGN--lRt3eQPrMajrg",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"text\": \"Train arriving in 3 minutes\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/stations/6a8b93c59977021716d9c727/announcements",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "stations",
+            "6a8b93c59977021716d9c727",
+            "announcements"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "create announcement unauthorized",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"text\": \"test unauthorized request\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/stations/6a8b93c59977021716d9c727/announcements",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "stations",
+            "6a8b93c59977021716d9c727",
+            "announcements"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
